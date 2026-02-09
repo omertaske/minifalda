@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bir Devrimin Kısalığı: Mini Etek Tarihi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Özelleştirilmiş Fontlar */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fcfbf9;
+            color: #1a1a1a;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        h1, h2, h3, h4, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Tema Renkleri */
+        :root {
+            --accent-color: #e91e63;
+        }
+        .text-accent { color: var(--accent-color); transition: color 0.5s; }
+        .bg-accent { background-color: var(--accent-color); transition: background-color 0.5s; }
+        .border-accent { border-color: var(--accent-color); transition: border-color 0.5s; }
+        .hover-bg-accent:hover { background-color: var(--accent-color); }
+        .hover-text-accent:hover { color: var(--accent-color); }
+
+        /* Animasyonlar */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+        
+        /* Quiz Stilleri */
+        .quiz-option { transition: all 0.3s ease; }
+        .quiz-option:hover { transform: translateX(10px); }
+
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid var(--accent-color);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* İkonlar Scroll */
+        .hide-scroll-bar::-webkit-scrollbar { display: none; }
+        .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+            z-index: 100;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        /* Mobil Menü */
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-pink-200 selection:text-pink-900">
+
+    <!-- Navigasyon -->
+    <nav id="navbar" class="fixed w-full z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="serif-font text-2xl font-bold tracking-tighter group">
+                MODA<span class="text-accent group-hover:text-black transition duration-300">TARİHİ</span>
+            </a>
+            
+            <!-- Masaüstü Linkler -->
+            <div class="space-x-6 hidden md:block text-sm font-semibold tracking-wide">
+                <a href="#baslangic" class="hover-text-accent transition">BAŞLANGIÇ</a>
+                <a href="#devrim" class="hover-text-accent transition">TARİHÇE</a>
+                <a href="#teori" class="hover-text-accent transition">TEORİ</a>
+                <a href="#ai-lab" class="text-accent hover:text-black transition">AI LAB ✨</a>
+                <a href="#ikonlar" class="hover-text-accent transition">İKONLAR</a>
+                <a href="#galeri" class="hover-text-accent transition">ZAMAN ÇİZELGESİ</a>
+            </div>
+
+            <!-- Mobil Menü Butonu -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-gray-800 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobil Menü İçerik -->
+        <div id="mobile-menu" class="md:hidden bg-white border-b border-gray-100">
+            <div class="px-4 py-2 space-y-2 text-sm font-semibold">
+                <a href="#baslangic" onclick="toggleMobileMenu()" class="block py-2 hover:text-accent">BAŞLANGIÇ</a>
+                <a href="#devrim" onclick="toggleMobileMenu()" class="block py-2 hover:text-accent">TARİHÇE</a>
+                <a href="#teori" onclick="toggleMobileMenu()" class="block py-2 hover:text-accent">TEORİ</a>
+                <a href="#ai-lab" onclick="toggleMobileMenu()" class="block py-2 text-accent">AI LAB ✨</a>
+                <a href="#ikonlar" onclick="toggleMobileMenu()" class="block py-2 hover:text-accent">İKONLAR</a>
+                <a href="#galeri" onclick="toggleMobileMenu()" class="block py-2 hover:text-accent">ZAMAN ÇİZELGESİ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Bölümü -->
+    <header id="baslangic" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden fade-in-section">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 z-10">
+                <span class="text-accent font-bold tracking-widest text-sm uppercase mb-2 block animate-pulse">Bir Gardırop Parçasından Fazlası</span>
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6 text-gray-900">
+                    Cesaretin <br>
+                    <span class="serif-font italic text-accent relative">
+                        Sembolü
+                        <svg class="absolute w-full h-3 -bottom-1 left-0 text-yellow-300 -z-10 opacity-70" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" />
+                        </svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 leading-relaxed max-w-md">
+                    Mini etek sadece bacakları göstermek için tasarlanmadı; kadınların koşabilmesi, otobüse yetişebilmesi ve özgürleşmesi için bir manifestoydu.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#devrim" class="inline-block bg-black text-white px-8 py-3 font-semibold rounded-full hover-bg-accent transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        Hikayeyi Keşfet
+                    </a>
+                </div>
+            </div>
+            
+            <div class="md:w-1/2 mt-12 md:mt-0 relative group perspective-1000">
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+                
+                <div class="relative bg-white p-3 shadow-2xl transform rotate-3 transition duration-700 group-hover:rotate-0 group-hover:scale-105 cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop" alt="1960'lar Moda Stili" class="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    <div class="p-4 text-center border-t-2 border-gray-100 mt-2">
+                        <p class="serif-font italic text-gray-500">Swinging London, 1966</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Bölüm 1: Mary Quant ve Başlangıç -->
+        <section id="devrim" class="py-24 bg-white/50 fade-in-section">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold mb-4">Londra'da Bir Kıvılcım</h2>
+                    <div class="w-24 h-1 bg-accent mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-accent translate-x-3 translate-y-3 -z-10 transition-transform group-hover:translate-x-5 group-hover:translate-y-5"></div>
+                        <img src="https://images.unsplash.com/photo-1582142839970-2b9e04b60f65?q=80&w=800&auto=format&fit=crop" alt="Mary Quant Tasarımı" class="w-full h-96 object-cover border-2 border-gray-900 filter contrast-125">
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold mb-6 serif-font flex items-center">
+                            <span class="text-6xl text-gray-200 mr-4 -ml-4 font-serif">1</span>
+                            Mary Quant ve "Bazaar"
+                        </h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed text-lg">
+                            1964 yılında, Londra'nın King's Road caddesindeki küçük butiği <strong>Bazaar</strong>'da Mary Quant, etek boylarını radikal bir şekilde yukarı çekti. Adını o dönemin popüler arabası <em>Mini Cooper</em>'dan alan "Mini Etek", gençliğin, isyanın ve enerjinin bir ifadesi oldu.
+                        </p>
+                        <blockquote class="border-l-4 border-accent pl-6 italic text-gray-800 my-8 text-xl font-serif">
+                            "Mini eteği ben icat etmedim, onu King's Road'daki kızlar icat etti."
+                            <footer class="text-sm font-sans font-bold text-accent mt-3 not-italic">- Mary Quant</footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bölüm 2: Etek Boyu Teorisi -->
+        <section id="teori" class="py-20 bg-gray-900 text-white fade-in-section relative overflow-hidden">
+            <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(#e91e63 1px, transparent 1px); background-size: 20px 20px;"></div>
+            
+            <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+                <span class="inline-block py-1 px-3 rounded-full bg-accent/20 text-accent text-xs font-bold tracking-widest mb-4 border border-accent/50">EKONOMİ VE MODA</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 serif-font">Hemline Index (Etek Boyu Endeksi)</h2>
+                <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+                    1926'da ekonomist George Taylor ilginç bir teori ortaya attı: <br>
+                    <span class="text-white font-semibold">"Ekonomi iyiye gittiğinde etekler kısalır, kötüye gittiğinde uzar."</span>
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover-border-accent transition duration-300 hover:border-accent">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h4 class="text-xl font-bold mb-3 text-accent">Refah Dönemleri</h4>
+                        <p class="text-gray-400">1920'lerin kükreyen yılları ve 1960'ların patlayan ekonomisinde kadınlar daha pahalı çorapları göstermekten çekinmedi, etekler kısaldı.</p>
+                    </div>
+                    <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-blue-400 transition duration-300">
+                        <div class="text-4xl mb-4">📉</div>
+                        <h4 class="text-xl font-bold mb-3 text-blue-400">Kriz Dönemleri</h4>
+                        <p class="text-gray-400">1929 Büyük Buhranı'nda ve 1970'lerin petrol krizinde kumaş tasarrufu yerine muhafazakarlık ön plana çıktı, etekler yere kadar uzadı (Maxi Etek).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI FASHION LAB -->
+        <section id="ai-lab" class="py-24 fade-in-section">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block py-1 px-3 rounded-full bg-black text-white text-xs font-bold tracking-widest mb-4">GEMINI POWERED</span>
+                    <h2 class="text-4xl font-bold mb-4 serif-font">Yapay Zeka Moda Laboratuvarı ✨</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Gemini teknolojisi ile stil danışmanlığı alın veya merak ettiklerinizi sorun.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Stil Danışmanı -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover-border-accent transition-colors duration-300">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl mr-4">👗</div>
+                            <h3 class="text-2xl font-bold serif-font">AI Stil Danışmanı</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Etkinlik / Durum</label>
+                                <input type="text" id="style-occasion" placeholder="Örn: İlk buluşma, Ofis partisi..." class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus-ring-accent bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Dönem İlhamı</label>
+                                <select id="style-decade" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus-ring-accent bg-gray-50">
+                                    <option value="60s">1960'lar</option>
+                                    <option value="70s">1970'ler</option>
+                                    <option value="90s">1990'lar</option>
+                                    <option value="today">Günümüz</option>
+                                </select>
+                            </div>
+                            <button onclick="generateStyle()" id="btn-style" class="w-full bg-black text-white py-3 rounded-lg font-bold hover-bg-accent transition flex items-center justify-center">
+                                Kombin Oluştur ✨
+                            </button>
+                        </div>
+                        <div id="style-result" class="mt-6 p-4 bg-gray-50 rounded-lg hidden border-l-4 border-accent text-sm text-gray-700 leading-relaxed"></div>
+                    </div>
+
+                    <!-- Tarihçi -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:border-blue-400 transition-colors duration-300">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl mr-4">🧐</div>
+                            <h3 class="text-2xl font-bold serif-font">Moda Tarihçisine Sor</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Sorunuz</label>
+                                <textarea id="history-question" rows="4" placeholder="Örn: Mini eteği kim icat etti?..." class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50"></textarea>
+                            </div>
+                            <button onclick="askHistorian()" id="btn-history" class="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition flex items-center justify-center">
+                                Cevapla ✨
+                            </button>
+                        </div>
+                        <div id="history-result" class="mt-6 p-4 bg-gray-50 rounded-lg hidden border-l-4 border-blue-400 text-sm text-gray-700 leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODA İKONLARI -->
+        <section id="ikonlar" class="py-20 bg-black text-white fade-in-section overflow-hidden relative">
+            <div class="max-w-6xl mx-auto px-4 mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold serif-font mb-2 text-accent">Devrime Yüz Verenler</h2>
+                    <p class="text-gray-400">Detaylar ve biyografi için görsellere tıklayın.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="scrollIcons('left')" class="p-3 bg-gray-800 rounded-full hover:bg-gray-700 transition border border-gray-700 shadow-lg active:scale-95"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button onclick="scrollIcons('right')" class="p-3 bg-gray-800 rounded-full hover:bg-gray-700 transition border border-gray-700 shadow-lg active:scale-95"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                </div>
+            </div>
+            
+            <!-- Yatay Scroll Container -->
+            <div id="icon-scroll-container" class="flex overflow-x-auto hide-scroll-bar px-4 pb-8 space-x-6 scroll-smooth">
+                <!-- Twiggy -->
+                <div class="flex-shrink-0 w-64 group cursor-pointer" onclick="openIconDetail('twiggy')">
+                    <div class="h-80 overflow-hidden rounded-lg mb-4 relative">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500 transform group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Hikayeyi Gör</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <h3 class="text-xl font-bold text-white">Twiggy</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">1960'ların yüzü. Androjen stili ve mini eteği küresel bir fenomene dönüştürdü.</p>
+                </div>
+                <!-- Jean Shrimpton -->
+                <div class="flex-shrink-0 w-64 group cursor-pointer" onclick="openIconDetail('shrimpton')">
+                    <div class="h-80 overflow-hidden rounded-lg mb-4 relative">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500 transform group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Hikayeyi Gör</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <h3 class="text-xl font-bold text-white">Jean Shrimpton</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">"The Shrimp". 1965'te mini etekle yarattığı at yarışı skandalıyla tarihe geçti.</p>
+                </div>
+                <!-- Debbie Harry -->
+                <div class="flex-shrink-0 w-64 group cursor-pointer" onclick="openIconDetail('harry')">
+                    <div class="h-80 overflow-hidden rounded-lg mb-4 relative">
+                        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=80" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500 transform group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Hikayeyi Gör</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <h3 class="text-xl font-bold text-white">Debbie Harry</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Punk-Rock ikonu. Mini eteği deri ceketler ve asi bir tavırla birleştirdi.</p>
+                </div>
+                <!-- Spice Girls -->
+                <div class="flex-shrink-0 w-64 group cursor-pointer" onclick="openIconDetail('spicegirls')">
+                    <div class="h-80 overflow-hidden rounded-lg mb-4 relative">
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&q=80" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500 transform group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Hikayeyi Gör</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <h3 class="text-xl font-bold text-white">Spice Girls</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">90'lar. "Girl Power" hareketiyle mini elbiseleri bir neslin üniforması yaptılar.</p>
+                </div>
+                <!-- Mary Quant -->
+                <div class="flex-shrink-0 w-64 group cursor-pointer" onclick="openIconDetail('quant')">
+                    <div class="h-80 overflow-hidden rounded-lg mb-4 relative">
+                        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500 transform group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Hikayeyi Gör</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black to-transparent">
+                            <h3 class="text-xl font-bold text-white">Mary Quant</h3>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Dahi tasarımcı. Mini eteği sokağa indirip tüm dünyaya pazarlayan kadın.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="py-24 fade-in-section">
+            <div class="max-w-3xl mx-auto px-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold mb-2 serif-font">Moda Bilgini Test Et</h2>
+                    <p class="text-gray-600">60'lar modasına ne kadar hakimsin?</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-t-8 border-accent relative overflow-hidden min-h-[400px]">
+                    <div id="quiz-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Zaman Çizelgesi Galeri -->
+        <section id="galeri" class="py-24 bg-white/50 fade-in-section">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-center text-4xl font-bold mb-4 serif-font">Zaman Çizelgesi</h2>
+                <p class="text-center text-gray-500 mb-16">O yılların ruhunu hissetmek için kartlara tıklayın.</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="group relative overflow-hidden h-80 cursor-pointer rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" onclick="openDetail('1960')">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="1960lar">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <span class="text-accent font-bold text-sm tracking-wider uppercase bg-white/10 px-2 py-1 rounded backdrop-blur-sm">1960'lar</span>
+                            <h4 class="text-white text-xl font-bold serif-font mt-3 group-hover-text-accent transition">Devrim</h4>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden h-80 cursor-pointer rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" onclick="openDetail('1970')">
+                        <img src="https://images.unsplash.com/photo-1485230946086-1d99d52b07ad?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="1970ler">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <span class="text-yellow-400 font-bold text-sm tracking-wider uppercase bg-white/10 px-2 py-1 rounded backdrop-blur-sm">1970'ler</span>
+                            <h4 class="text-white text-xl font-bold serif-font mt-3 group-hover:text-yellow-400 transition">İsyan</h4>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden h-80 cursor-pointer rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" onclick="openDetail('1990')">
+                        <img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="1990lar">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <span class="text-blue-400 font-bold text-sm tracking-wider uppercase bg-white/10 px-2 py-1 rounded backdrop-blur-sm">1990'lar</span>
+                            <h4 class="text-white text-xl font-bold serif-font mt-3 group-hover:text-blue-400 transition">Süpermodeller</h4>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden h-80 cursor-pointer rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" onclick="openDetail('today')">
+                        <img src="https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Günümüz">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <span class="text-purple-400 font-bold text-sm tracking-wider uppercase bg-white/10 px-2 py-1 rounded backdrop-blur-sm">Günümüz</span>
+                            <h4 class="text-white text-xl font-bold serif-font mt-3 group-hover:text-purple-400 transition">Modern</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-16 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-12 text-center md:text-left">
+            <div>
+                <h4 class="serif-font text-3xl font-bold mb-4">MODA<span class="text-accent">TARİHİ</span></h4>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Bu proje, mini eteğin devrimci hikayesini anlatmak için tasarlandı.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-lg mb-4 text-gray-300 uppercase tracking-widest text-xs">Bağlantılar</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="#" class="hover:text-white transition">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white transition">Kaynaklar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-lg mb-4 text-gray-300 uppercase tracking-widest text-xs">Bülten</h5>
+                <p class="text-gray-500 text-sm mb-4">Yeni içerikler için abone olun.</p>
+                <div class="flex flex-col">
+                    <div class="flex">
+                        <input id="newsletter-email" type="email" placeholder="E-posta adresiniz" class="bg-gray-800 text-white px-4 py-2 rounded-l-md w-full focus:outline-none focus:ring-1 focus:ring-accent transition">
+                        <button onclick="subscribeNewsletter()" class="bg-accent px-4 py-2 rounded-r-md hover:bg-white hover-text-accent transition font-bold">></button>
+                    </div>
+                    <div id="newsletter-msg" class="text-green-400 text-xs mt-2 hidden transition-all duration-300 opacity-0 transform translate-y-2">Teşekkürler! Kaydınız alındı.</div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto px-4 mt-12 pt-8 border-t border-gray-900 text-center text-gray-600 text-xs">
+            <p>&copy; 2024 Moda Tarihi Projesi.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button id="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 left-6 z-50 bg-white text-black p-3 rounded-full shadow-lg border border-gray-200 hover:bg-black hover:text-white transition duration-300 hidden transform hover:-translate-y-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+
+    <!-- Detail Modal (Biyografi ve Galeri için Güncellendi) -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-white transform translate-y-full transition-transform duration-500 overflow-y-auto hidden">
+        <button onclick="closeDetail()" class="fixed top-6 right-6 z-50 bg-black/80 backdrop-blur text-white p-3 rounded-full hover-bg-accent transition shadow-lg group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="relative w-full min-h-screen">
+            <div class="relative h-[60vh] w-full">
+                <img id="detail-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-white"></div>
+                <div class="absolute bottom-0 left-0 w-full p-4 md:p-12 pb-12 max-w-6xl mx-auto">
+                    <span id="detail-year" class="inline-block bg-accent text-white px-4 py-1 text-sm font-bold tracking-widest mb-4 shadow-lg"></span>
+                    <h2 id="detail-title" class="text-5xl md:text-7xl font-bold serif-font text-gray-900 leading-none drop-shadow-sm"></h2>
+                </div>
+            </div>
+            <div class="max-w-6xl mx-auto px-4 py-12 pb-24">
+                <div class="grid md:grid-cols-3 gap-12">
+                    <div class="md:col-span-2">
+                        <div id="detail-desc" class="prose prose-lg text-gray-700 leading-relaxed font-light mb-12"></div>
+                        
+                        <div class="mt-16 pt-10 border-t border-gray-200">
+                            <h4 id="gallery-title" class="font-bold text-2xl mb-6 serif-font flex items-center">
+                                <span class="w-8 h-1 bg-black mr-3"></span>
+                                Fotoğraflar
+                            </h4>
+                            <div id="detail-gallery" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 sticky top-12 shadow-sm">
+                            <h4 id="sidebar-title" class="font-bold text-xl mb-6 border-b-2 border-accent pb-3 inline-block font-serif">Anahtar Bilgiler</h4>
+                            <ul id="detail-trends" class="space-y-4"></ul>
+                            <div class="mt-8 bg-gray-200/50 p-4 rounded-lg">
+                                <p class="text-xs text-accent font-bold uppercase mb-2">Unutulmaz Söz</p>
+                                <p id="detail-fact" class="text-sm text-gray-700 italic font-serif leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = ""; 
+
+        // --- INIT & OBSERVERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in-section').forEach(section => observer.observe(section));
+            
+            if(localStorage.getItem('newsletter_subscribed')) {
+                const emailInput = document.getElementById('newsletter-email');
+                emailInput.placeholder = "Zaten abonesiniz ✨";
+                emailInput.disabled = true;
+                emailInput.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            
+            loadQuestion();
+        });
+
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            const btn = document.getElementById('scroll-top');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md', 'py-2', 'bg-white');
+                nav.classList.remove('py-4', 'bg-white/90');
+                btn.classList.remove('hidden');
+            } else {
+                nav.classList.remove('shadow-md', 'py-2', 'bg-white');
+                nav.classList.add('py-4', 'bg-white/90');
+                btn.classList.add('hidden');
+            }
+        });
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('open');
+        }
+
+        function scrollIcons(direction) {
+            const container = document.getElementById('icon-scroll-container');
+            container.scrollBy({ left: direction === 'left' ? -300 : 300, behavior: 'smooth' });
+        }
+
+        function subscribeNewsletter() {
+            const input = document.getElementById('newsletter-email');
+            const msg = document.getElementById('newsletter-msg');
+            if(input.value) {
+                localStorage.setItem('newsletter_subscribed', 'true');
+                input.value = ''; input.disabled = true; input.placeholder = "Aramıza hoş geldiniz!";
+                msg.classList.remove('hidden', 'opacity-0', 'translate-y-2');
+                msg.classList.add('opacity-100', 'translate-y-0');
+                setTimeout(() => {
+                    msg.classList.remove('opacity-100', 'translate-y-0');
+                    msg.classList.add('opacity-0', 'translate-y-2');
+                    setTimeout(() => msg.classList.add('hidden'), 300);
+                }, 4000);
+            }
+        }
+
+        function launchConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        const questions = [
+            { question: "Mini eteğin adını aldığı ikonik araba hangisidir?", options: ["Volkswagen Beetle", "Mini Cooper", "Fiat 500"], correct: 1, feedback: "Doğru! Mary Quant, en sevdiği araba olan Mini Cooper'dan esinlenmiştir." },
+            { question: "Mini eteği Fransa'da 'Uzay Çağı' koleksiyonuyla kim tanıttı?", options: ["Yves Saint Laurent", "Coco Chanel", "André Courrèges"], correct: 2, feedback: "Harika! André Courrèges, fütüristik tasarımlarıyla mini eteği yüksek modaya taşıdı." },
+            { question: "60'ların mini etekle özdeşleşen, zayıf siluetiyle ünlü süpermodeli kimdir?", options: ["Twiggy", "Kate Moss", "Naomi Campbell"], correct: 0, feedback: "Evet! Twiggy (Lesley Hornby), dönemin moda ikonuydu." }
+        ];
+        let currentQuestion = 0; let score = 0;
+        function loadQuestion() {
+            const container = document.getElementById('quiz-container'); const q = questions[currentQuestion];
+            if (!q) { container.innerHTML = `<div class="text-center py-10 fade-in-section is-visible"><div class="text-6xl mb-4">${score===30?'👑':score>=20?'🌟':'📚'}</div><h3 class="text-2xl font-bold mb-2">Test Tamamlandı!</h3><p class="text-5xl font-bold text-accent mb-6">${score} / 30</p><button onclick="currentQuestion=0;score=0;loadQuestion()" class="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 transition">Tekrar Çöz</button></div>`; if(score === 30) launchConfetti(); return; }
+            let html = `<div class="mb-6 fade-in-section is-visible"><div class="flex justify-between items-center mb-4"><span class="text-xs font-bold text-gray-400 tracking-widest uppercase">Soru ${currentQuestion + 1} / ${questions.length}</span><span class="text-xs font-bold text-accent">Puan: ${score}</span></div><h3 class="text-xl font-bold mt-2 text-gray-800">${q.question}</h3></div><div class="space-y-3 fade-in-section is-visible">`;
+            q.options.forEach((opt, index) => { html += `<button onclick="handleAnswer(this, ${index})" class="quiz-option w-full text-left p-4 rounded-lg border border-gray-200 hover:bg-white hover:border-accent group flex justify-between items-center transition-all duration-200"><span class="font-semibold text-gray-700 group-hover:text-accent">${opt}</span><span class="hidden status-icon"></span></button>`; });
+            html += `</div><div id="feedback-area" class="mt-6 hidden p-4 rounded-lg bg-gray-100 text-sm fade-in-section is-visible"></div><button id="next-btn" onclick="currentQuestion++;loadQuestion()" class="mt-6 hidden bg-black text-white px-6 py-2 rounded-full hover-bg-accent transition w-full md:w-auto font-bold">Sonraki Soru &rarr;</button>`;
+            container.innerHTML = html;
+        }
+        function handleAnswer(btn, selectedIndex) {
+            const q = questions[currentQuestion]; const feedback = document.getElementById('feedback-area'); const nextBtn = document.getElementById('next-btn');
+            document.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; b.classList.add('opacity-50'); }); btn.classList.remove('opacity-50');
+            feedback.classList.remove('hidden'); nextBtn.classList.remove('hidden');
+            if (selectedIndex === q.correct) { score += 10; btn.classList.add('bg-green-100', 'border-green-500'); feedback.innerHTML = `<span class="text-green-600 font-bold">Doğru!</span> ${q.feedback}`; }
+            else { btn.classList.add('bg-red-100', 'border-red-500'); feedback.innerHTML = `<span class="text-red-600 font-bold">Yanlış.</span> Doğru cevap: <strong>${q.options[q.correct]}</strong>`; }
+        }
+
+        // --- AI LOGIC ---
+        function getSimulationResponse(type, input) {
+            const responses = {
+                'style': ["Harika bir seçim! <strong>{occasion}</strong> için sana <strong>{decade}</strong> ruhunu yansıtan şu kombini öneriyorum: <br><br>✨ <strong>Üst:</strong> Dönemin ikonik çizgili boğazlı kazağı veya ipek bir bluz.<br>✨ <strong>Alt:</strong> Tabii ki cesur bir A-kesim mini etek.<br>✨ <strong>Ayakkabı:</strong> Beyaz 'Go-go' botları bu kombinin yıldızı olacak!<br>✨ <strong>Aksesuar:</strong> Büyük halka küpeler."],
+                'history': ["Bu konu aslında dönemin özgürlük arayışıyla çok ilgili. <strong>Mary Quant</strong>, kadınların 'otobüse rahat yetişebilmesi' için etekleri kısalttığını söylerken aslında bir neslin sesini duyuruyordu."]
+            };
+            const list = responses[type];
+            let answer = list[Math.floor(Math.random() * list.length)];
+            answer = answer.replace('{occasion}', input.occasion || 'bu durum');
+            answer = answer.replace('{decade}', input.decade || 'seçtiğin dönem');
+            return answer + "<br><br><em>(Not: AI simülasyon modunda.)</em>";
+        }
+        async function callGemini(prompt) {
+            if (!apiKey) throw new Error("No API Key");
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+            const data = await response.json(); return data.candidates[0].content.parts[0].text;
+        }
+        async function generateStyle() {
+            const btn = document.getElementById('btn-style'); const res = document.getElementById('style-result');
+            const occasion = document.getElementById('style-occasion').value; const decade = document.getElementById('style-decade').value;
+            if(!occasion) return alert("Etkinlik girin");
+            btn.disabled = true; btn.innerHTML = '<span class="loader"></span> Tasarlanıyor...'; res.classList.add('hidden');
+            try { res.innerHTML = await callGemini(`Moda danışmanı olarak, '${occasion}' için '${decade}' döneminden ilham alan bir mini etek kombini öner (Türkçe, kısa).`); }
+            catch { res.innerHTML = getSimulationResponse('style', { occasion, decade }); }
+            res.classList.remove('hidden'); btn.disabled = false; btn.innerHTML = 'Kombin Oluştur ✨';
+        }
+        async function askHistorian() {
+            const btn = document.getElementById('btn-history'); const res = document.getElementById('history-result');
+            const question = document.getElementById('history-question').value;
+            if(!question) return alert("Soru girin");
+            btn.disabled = true; btn.innerHTML = '<span class="loader"></span> Araştırılıyor...'; res.classList.add('hidden');
+            try { res.innerHTML = await callGemini(`Moda tarihçisi olarak yanıtla (Türkçe, kısa): ${question}`); }
+            catch { res.innerHTML = getSimulationResponse('history', { question }); }
+            res.classList.remove('hidden'); btn.disabled = false; btn.innerHTML = 'Cevapla ✨';
+        }
+
+        // --- İKON DETAY VERİSİ ---
+        const iconData = {
+            'twiggy': {
+                label: "MODA İKONU",
+                title: "Twiggy",
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200&fit=crop",
+                quote: "Dönemimde her şey o kadar hızlı değişiyordu ki, biz sadece içinde sürükleniyorduk.",
+                desc: `
+                    <p class="mb-4 text-xl text-gray-900 font-medium">60'ların Gerçek Yüzü.</p>
+                    <p class="mb-4">Asıl adı Lesley Hornby olan Twiggy, 16 yaşında keşfedildiğinde moda dünyasını sonsuza dek değiştirdi. O döneme kadar moda olan 'kıvrımlı kadın' imajını yıkarak, aşırı zayıf silueti, kocaman boyalı kirpikleri ve androjen Bob kesim saçlarıyla 'Swinging London' akımının sembolü oldu.</p>
+                    <p class="mb-4">Mary Quant'ın tasarladığı mini etekleri en iyi taşıyan isimlerden biriydi. Twiggy'nin popülaritesi o kadar büyüktü ki, sadece bir model değil; bebekleri, kozmetik ürünleri ve kıyafet hatları olan küresel bir marka haline geldi.</p>
+                    <p>Mini eteğin 'masum ama asi' ruhunu podyumlardan sokaklara taşıyan en büyük güçtü.</p>
+                `,
+                stats: [
+                    "Gerçek Adı: Lesley Lawson",
+                    "Doğum: 1949, Londra",
+                    "Etkisi: Waif (Zayıf) Look Akımı",
+                    "Favori: A-Kesim Mini Elbiseler"
+                ],
+                gallery: [
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500",
+                    "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
+                    "https://images.unsplash.com/photo-1582142839970-2b9e04b60f65?w=500"
+                ]
+            },
+            'shrimpton': {
+                label: "MODA İKONU",
+                title: "Jean Shrimpton",
+                image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&fit=crop",
+                quote: "Melbourne Kupası'ndaki o gün sadece sıcaktı, skandal yaratmak istememiştim.",
+                desc: `
+                    <p class="mb-4 text-xl text-gray-900 font-medium">"The Shrimp" ve Büyük Skandal.</p>
+                    <p class="mb-4">1960'ların en yüksek ücretli ve en çok fotoğraflanan modeli olan Jean Shrimpton, mini eteğin ana akım medyadaki ilk 'şok' dalgasını yaratan isimdi.</p>
+                    <p class="mb-4">1965 yılında Avustralya'da düzenlenen prestijli Melbourne Kupası at yarışlarına; şapkasız, eldivensiz, çorapsız ve dizinin dört parmak üzerinde biten bir elbiseyle katıldı. Bu, o dönemde kraliyet protokollerine ve toplumsal kurallara bir hakaret olarak algılandı.</p>
+                    <p>Ertesi gün tüm gazete manşetlerinde yer alan bu olay, mini eteğin sadece bir 'gençlik hevesi' değil, toplumsal bir devrim olduğunun kanıtıydı.</p>
+                `,
+                stats: [
+                    "Takma Adı: The Shrimp",
+                    "İkonik Olay: 1965 Melbourne Kupası",
+                    "Stili: Aristokratik Asi",
+                    "İlişkisi: Fotoğrafçı David Bailey"
+                ],
+                gallery: [
+                    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500",
+                    "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?w=500",
+                    "https://images.unsplash.com/photo-1502323777036-f29e3972d82f?w=500"
+                ]
+            },
+            'harry': {
+                label: "PUNK İKONU",
+                title: "Debbie Harry",
+                image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&fit=crop",
+                quote: "Sahnede mini etek giymek bana kendimi bir savaşçı gibi hissettiriyordu.",
+                desc: `
+                    <p class="mb-4 text-xl text-gray-900 font-medium">Punk'ın Sarışın Gücü.</p>
+                    <p class="mb-4">Blondie grubunun solisti Debbie Harry, 1970'lerin sonunda mini eteği tamamen farklı bir boyuta taşıdı. Mary Quant'ın 'cici kız' imajından çıkarıp, yırtık tişörtler, deri ceketler ve darmadağınık platin saçlarla birleştirdi.</p>
+                    <p class="mb-4">Onun stili, mini eteğin sadece 60'ların nostaljisi olmadığını, her dönemin isyanına uyum sağlayabileceğini gösterdi. Sahnede giydiği mini etekler ve altına giydiği askeri botlar, 'Cool' kavramını yeniden tanımladı.</p>
+                    <p>Kadınların hem seksi hem de ulaşılamaz derecede güçlü olabileceğini tüm dünyaya kanıtladı.</p>
+                `,
+                stats: [
+                    "Grup: Blondie",
+                    "Dönemi: 70'ler Sonu / 80'ler",
+                    "Stili: Punk Glamour",
+                    "Anahtar Parça: Ekose Mini Etek"
+                ],
+                gallery: [
+                    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500",
+                    "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
+                    "https://images.unsplash.com/photo-1526218626217-dc65a29bb444?w=500"
+                ]
+            },
+            'spicegirls': {
+                label: "POP İKONLARI",
+                title: "Spice Girls",
+                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&fit=crop",
+                quote: "Girl Power sadece bir slogan değil, bir yaşam biçimidir.",
+                desc: `
+                    <p class="mb-4 text-xl text-gray-900 font-medium">90'lar ve "Girl Power" Devrimi.</p>
+                    <p class="mb-4">Spice Girls, 1990'larda mini eteği genç kızların 'üniforması' haline getirdi. Geri Halliwell'in ikonik 'Union Jack' mini elbisesi, İngiliz moda tarihinin en çok hatırlanan anlarından biridir.</p>
+                    <p class="mb-4">Grup, mini eteği devasa platform ayakkabılarla birleştirerek kadın gücünü (Girl Power) her kıtaya yaydı. Victoria Beckham'ın (Posh Spice) giydiği minimal siyah mini elbiseler, 90'ların sofistike lüksünü temsil ediyordu.</p>
+                    <p>Onlar sayesinde mini etek, 60'lardaki devrimci ruhunu pop müzik aracılığıyla yeni bir nesle aşılamayı başardı.</p>
+                `,
+                stats: [
+                    "Üyeler: 5 İkonik Karakter",
+                    "Dönemi: 1990'lar",
+                    "Felsefe: Girl Power",
+                    "Anahtar Parça: Platform Bot & Mini"
+                ],
+                gallery: [
+                    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500",
+                    "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=500",
+                    "https://images.unsplash.com/photo-1552874869-5c39ec9288dc?w=500"
+                ]
+            },
+            'quant': {
+                label: "TASARIMCI",
+                title: "Mary Quant",
+                image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=1200&fit=crop",
+                quote: "Modanın amacı, giysileri herkes için erişilebilir ve eğlenceli kılmaktır.",
+                desc: `
+                    <p class="mb-4 text-xl text-gray-900 font-medium">Devrimi Başlatan Kadın.</p>
+                    <p class="mb-4">Mary Quant, mini eteğin mucidi olarak anılsa da o mütevazıydı: "Onu sokağın kızları icat etti" derdi. Ancak o sokaktaki enerjiyi alıp King's Road'daki 'Bazaar' butiğinde tüm dünyaya pazarlayan dahiydi.</p>
+                    <p class="mb-4">Quant, modayı elitlerin elinden alıp gençlere verdi. Tasarımları sayesinde kadınlar ilk kez özgürce hareket edebildi, koşabildi ve dans edebildi. Renkli çorapları ve mini etekleri, savaştan çıkan kasvetli Avrupa'ya neşe getirdi.</p>
+                    <p>O, kısalan etek boylarıyla sadece bacakları değil, kadınların toplumsal haklarını ve özgüvenlerini de yukarı taşıdı.</p>
+                `,
+                stats: [
+                    "Butik: Bazaar (Chelsea)",
+                    "İlham: Mini Cooper Araba",
+                    "Ödül: Britanya İmparatorluk Nişanı",
+                    "Logosu: Papatya (Daisy)"
+                ],
+                gallery: [
+                    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500",
+                    "https://images.unsplash.com/photo-1582142839970-2b9e04b60f65?w=500",
+                    "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500"
+                ]
+            }
+        };
+
+        const timelineData = {
+            '1960': { year: "1960'LAR", title: "Devrim ve Özgürlük", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200&fit=crop", fact: "Jean Shrimpton 1965'te çorapsız mini etek giyerek skandal yarattı.", desc: "1960'lar bir gençlik depremiydi. Mary Quant ve Andre Courreges kadınları özgürleştirdi.", trends: ["Geometrik saçlar", "Beyaz botlar", "PVC"], gallery: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400", "https://images.unsplash.com/photo-1582142839970-2b9e04b60f65?w=400", "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400"] },
+            '1970': { year: "1970'LER", title: "Punk ve Anarşi", image: "https://images.unsplash.com/photo-1485230946086-1d99d52b07ad?q=80&w=1200&fit=crop", fact: "Vivienne Westwood'un SEX butiği modayı protestoya dönüştürdü.", desc: "70'lerde mini etek yeraltına indi, punk kültürüyle birleşip asi bir kimlik kazandı.", trends: ["Ekose", "Deri ceket", "File çorap"], gallery: ["https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400", "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?w=400", "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=400"] },
+            '1990': { year: "1990'LAR", title: "Süpermodeller", image: "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?q=80&w=1200&fit=crop", fact: "Clueless filmi ekose takımları popüler yaptı.", desc: "90'larda Naomi ve Kate Moss podyumları salladı. Versace ve Chanel lüksü miniyle birleştirdi.", trends: ["Tüvit takım", "Crop üst", "Slip elbise"], gallery: ["https://images.unsplash.com/photo-1552874869-5c39ec9288dc?w=400", "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400", "https://images.unsplash.com/photo-1529139574466-a302d2052542?w=400"] },
+            'today': { year: "GÜNÜMÜZ", title: "Sınırsız Stil", image: "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1200&fit=crop", fact: "Miu Miu mikro-mini etek 2022'de viral oldu.", desc: "Bugün kural yok. Spor ayakkabı veya topuklu, mini etek gardırobun demirbaşı.", trends: ["Mikro-mini", "Tenis eteği", "Oversize"], gallery: ["https://images.unsplash.com/photo-1605763240004-7d93b172d7cd?w=400", "https://images.unsplash.com/photo-1583209814683-c023dd293cc6?w=400", "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400"] }
+        };
+
+        function openDetail(key) {
+            const d = timelineData[key]; const m = document.getElementById('detail-modal');
+            document.getElementById('sidebar-title').innerText = "Anahtar Trendler";
+            document.getElementById('gallery-title').innerHTML = '<span class="w-8 h-1 bg-black mr-3"></span>Dönemden Kareler';
+            document.getElementById('detail-year').innerText = d.year; document.getElementById('detail-title').innerText = d.title; document.getElementById('detail-img').src = d.image; document.getElementById('detail-desc').innerHTML = d.desc; document.getElementById('detail-fact').innerText = d.fact;
+            document.getElementById('detail-trends').innerHTML = d.trends.map(t => `<li class="flex items-center text-gray-600"><span class="w-2 h-2 bg-accent rounded-full mr-3"></span>${t}</li>`).join('');
+            document.getElementById('detail-gallery').innerHTML = d.gallery.map(i => `<div class="aspect-[3/4] rounded-lg overflow-hidden shadow-sm"><img src="${i}" class="w-full h-full object-cover"></div>`).join('');
+            m.classList.remove('hidden'); setTimeout(()=>m.classList.remove('translate-y-full'),10); document.body.style.overflow='hidden';
+        }
+
+        function openIconDetail(key) {
+            const d = iconData[key]; const m = document.getElementById('detail-modal');
+            document.getElementById('sidebar-title').innerText = "Anahtar Bilgiler";
+            document.getElementById('gallery-title').innerHTML = '<span class="w-8 h-1 bg-black mr-3"></span>İkonik Görünümler';
+            document.getElementById('detail-year').innerText = d.label;
+            document.getElementById('detail-title').innerText = d.title;
+            document.getElementById('detail-img').src = d.image;
+            document.getElementById('detail-desc').innerHTML = d.desc;
+            document.getElementById('detail-fact').innerText = `"${d.quote}"`;
+            document.getElementById('detail-trends').innerHTML = d.stats.map(t => `<li class="flex items-center text-gray-600"><span class="w-2 h-2 bg-accent rounded-full mr-3"></span>${t}</li>`).join('');
+            document.getElementById('detail-gallery').innerHTML = d.gallery.map(i => `<div class="aspect-[3/4] rounded-lg overflow-hidden shadow-md group"><img src="${i}" class="w-full h-full object-cover transition transform group-hover:scale-110"></div>`).join('');
+            m.classList.remove('hidden'); setTimeout(()=>m.classList.remove('translate-y-full'),10); document.body.style.overflow='hidden';
+        }
+
+        function closeDetail() { const m=document.getElementById('detail-modal'); m.classList.add('translate-y-full'); setTimeout(()=>{m.classList.add('hidden');document.body.style.overflow='auto'},500); }
+    </script>
+</body>
+</html>
